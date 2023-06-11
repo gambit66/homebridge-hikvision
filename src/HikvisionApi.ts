@@ -1,6 +1,6 @@
 import https from 'https';
 import Axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { AxiosDigest } from 'axios-digest';
+import AxiosDigest from 'axios-digest';
 import xml2js, { Parser } from 'xml2js';
 import highland from 'highland';
 import { PlatformConfig } from 'homebridge';
