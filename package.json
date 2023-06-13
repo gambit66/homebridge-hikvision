@@ -8,8 +8,8 @@
     "url": "https://github.com/eu-evops/homebridge-hikvision"
   },
   "dependencies": {
-    "axios": "^0.24.0",
-    "axios-digest": "^0.3.0",
+    "@lukesthl/ts-axios-digest-auth": "^1.0.5",
+    "axios": "^1.4.0",
     "highland": "^2.13.5",
     "homebridge-camera-ffmpeg": "v3.1.4",
     "xml2js": "^0.6.0"

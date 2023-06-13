@@ -1,6 +1,6 @@
 import https from 'https';
 import Axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import AxiosDigest from 'axios-digest';
+import { AxiosDigestAuth } from '@lukesthl/ts-axios-digest-auth';
 import xml2js, { Parser } from 'xml2js';
 import highland from 'highland';
 import { PlatformConfig } from 'homebridge';
@@ -16,7 +16,7 @@ export interface HikVisionNvrApiConfiguration extends PlatformConfig {
 }
 
 export class HikvisionApi {
-  private _http?: AxiosDigest
+  private _http: AxiosDigestAuth
   private _parser?: Parser
 
   constructor(config: HikVisionNvrApiConfiguration) {
@@ -26,7 +26,11 @@ export class HikvisionApi {
         rejectUnauthorized: !config.ignoreInsecureTls
       })
     });
-    this._http = new AxiosDigest(config.username, config.password, _axios);
+    this._http = new AxiosDigestAuth({
+      username: config.username,
+      password: config.password,
+      axios: _axios
+    });
     this._parser = new Parser({ explicitArray: false })
   }
 
@@ -118,12 +122,12 @@ export class HikvisionApi {
   }
 
   async get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse | undefined> {
-    return this._http?.get(url, config);
+    return this._http.get(url, config);
   }
 
   private async _getResponse(path: string) {
-    const response = await this._http?.get(path);
-    const responseJson = await this._parser?.parseStringPromise(response?.data);
+    const response = await this._http.get<string>(path);
+    const responseJson = await this._parser?.parseStringPromise(response.data);
     return responseJson;
   }
 }
