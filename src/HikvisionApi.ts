@@ -18,10 +18,11 @@ export interface HikVisionNvrApiConfiguration extends PlatformConfig {
 export class HikvisionApi {
   private _http: AxiosDigestAuth
   private _parser?: Parser
+  private _baseURL?: string
 
   constructor(config: HikVisionNvrApiConfiguration) {
+    this._baseURL = `http${config.secure ? 's' : ''}://${config.host}:${config.port}`
     const _axios = Axios.create({
-      baseURL: `http${config.secure ? 's' : ''}://${config.host}:${config.port}`,
       httpsAgent: new https.Agent({
         rejectUnauthorized: !config.ignoreInsecureTls
       })
@@ -122,11 +123,11 @@ export class HikvisionApi {
   }
 
   async get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse | undefined> {
-    return this._http.get(url, config);
+    return this._http.get(this._baseURL + url, config);
   }
 
   private async _getResponse(path: string) {
-    const response = await this._http.get<string>(path);
+    const response = await this._http.get<string>(this._baseURL + path);
     const responseJson = await this._parser?.parseStringPromise(response.data);
     return responseJson;
   }
